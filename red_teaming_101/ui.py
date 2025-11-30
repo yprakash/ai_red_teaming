@@ -21,7 +21,7 @@ def interact(user_message, lab_title, chat_history):
 
     # Append a single pair: [user, assistant]
     chat_history.append({"role": "user", "content": user_message})
-    chat_history.append({"role": "assistant", "content": assistant_response})
+    chat_history.append({"role": "assistant", "content": f"**Copilot**\n{assistant_response}"})
 
     # If solved, append a second assistant-only message (as empty user input)
     if res["solved"]:

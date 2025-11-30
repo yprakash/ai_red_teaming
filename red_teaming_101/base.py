@@ -32,6 +32,9 @@ class RedTeamLab:
 
         pattern = self.scorer.get("instruction")
         flags = 0 if self.scorer.get("isCaseSensitive", False) else re.IGNORECASE
-        if re.search(pattern, model_response, flags):
+        matched = re.search(pattern, model_response, flags)
+        if matched:
             return True, self.scorer.get("message", "")
+
+        print(f"[Evaluator] '{pattern}' did NOT match with response '{model_response}'")
         return False, "Try Again"

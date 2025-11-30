@@ -1,1 +1,2 @@
 01_credential_exfiltration/lab01.json
+02_metaprompt_extraction/lab02.json
