@@ -25,22 +25,35 @@ def interact(user_message, lab_title, chat_history):
 
     # If solved, append a second assistant-only message (as empty user input)
     if res["solved"]:
-        chat_history.append(("", res["score_message"]))
+        chat_history.append({"role": "", "content": res["score_message"]})
+        print(f"Lab solved! {chat_history[-1]}")
 
     return chat_history, ""
 
 
-def reset_lab(lab_title):
-    return [], ""
+def load_lab_info(lab_title):
+    info = "### Lab Information\n\nSelect a lab to see details."
+    for lab in labs:
+        if lab["challenge_title"] == lab_title:
+            info = f"### {lab['challenge_title']}\n\n" \
+                   f"**Goal:** {lab['goal']}\n\n" \
+                   f"**Description:** {lab['description']}\n\n" \
+                   f"**Desired Output:** {lab['desired_output']}\n\n"
+            break
+
+    # Reset chat + message box
+    return info, [], ""
 
 
 with gr.Blocks() as demo:
-    gr.Markdown("## Minimal Python Red Teaming Playground")
+    gr.Markdown("## Minimal AI Red Teaming Playground")
     lab_dropdown = gr.Dropdown(
         choices=titles,
         value=titles[0],
         label="Select Lab"
     )
+    starting_lab_info = load_lab_info(titles[0])[0]
+    lab_info = gr.Markdown(starting_lab_info)  # Empty initially
     chatbot = gr.Chatbot()
     # chatbot = gr.Chatbot(
     #     label="chat",
@@ -57,6 +70,9 @@ with gr.Blocks() as demo:
         [chatbot, msg],
     )
     # Reset chat history on dropdown change
-    lab_dropdown.change(reset_lab, lab_dropdown, [chatbot, msg])
+    lab_dropdown.change(
+        load_lab_info,
+        inputs=lab_dropdown,
+        outputs=[lab_info, chatbot, msg])
 
 demo.launch()
