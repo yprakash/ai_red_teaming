@@ -25,7 +25,10 @@ def interact(user_message, lab_title, chat_history):
 
     # If solved, append a second assistant-only message (as empty user input)
     if res["solved"]:
-        chat_history.append({"role": "", "content": res["score_message"]})
+        chat_history.append({
+            "role": "assistant",
+            "content": f"<div style='color:#b58900;font-weight:bold;'>Scorer message:</div>{res['score_message']}",
+        })
         print(f"Lab solved! {chat_history[-1]}")
 
     return chat_history, ""
