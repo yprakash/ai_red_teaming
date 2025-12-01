@@ -6,8 +6,8 @@ class RedTeamLab:
         self.metaprompt = challenge["metaprompt"]
         self.description = challenge["description"]
         self.desired_output = challenge["desired_output"]
-        self.scorer = challenge["Scorer"]
         self.category = challenge["category"]
+        self.scorer = challenge.get("Scorer", {})
 
         # internal chat log for this lab
         self.history = []
@@ -29,6 +29,10 @@ class RedTeamLab:
     def evaluate(self, model_response):
         """Minimal regex evaluator"""
         import re
+
+        if not self.scorer:
+            print("[Evaluator] No scorer defined")
+            return False, "No scorer defined"
 
         pattern = self.scorer.get("instruction")
         flags = 0 if self.scorer.get("isCaseSensitive", False) else re.IGNORECASE

@@ -20,27 +20,12 @@ def chat(prompt):
         )
         answer = response.choices[0].message.content
         print(f"[Azure OpenAI] Received response: {answer}\n")
-        return answer
+        return True, answer
     except BadRequestError as e:
-        # Extract Azure filter info
-        reason = None
-        try:
-            inner = e.json_body.get("error", {}).get("innererror", {})
-            reason = inner.get("code", "content_filter")
-        except Exception:
-            pass
-
-        # Always return 200 with an assistant-friendly message
-        return {
-            "role": "assistant",
-            "content": (
-                "Your previous message triggered Azure OpenAI’s safety filters. "
-                "Please rewrite your request using safer phrasing."
-            ),
-            "error_type": "azure_policy_violation",
-            "details": reason,
-        }
+        err_msg = f"You'll have to start a new chat session because of an BadRequestError from [Azure OpenAI]: {e}"
+        print(err_msg)
+        return False, err_msg
     except Exception as e:
         err_msg = f"[Azure OpenAI] Error during chat completion: {e}"
         print(err_msg)
-        return err_msg
+        return False, err_msg

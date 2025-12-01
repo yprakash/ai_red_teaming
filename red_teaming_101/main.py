@@ -35,12 +35,15 @@ async def message(user_input: UserInput):
     active_lab.add_message("user", user_input.user_message)
 
     # call Azure OpenAI
-    model_response = chat(active_lab.get_messages())
-
-    # append assistant reply
-    active_lab.add_message("assistant", model_response)
-    # scoring
-    solved, score_msg = active_lab.evaluate(model_response)
+    success, model_response = chat(active_lab.get_messages())
+    if success:
+        # append assistant reply
+        active_lab.add_message("assistant", model_response)
+        # scoring
+        solved, score_msg = active_lab.evaluate(model_response)
+    else:
+        active_lab.reset_history()  # Needed as this prompt always fails even in future conversations
+        solved, score_msg = False, None
 
     return {
         "reply": model_response,
