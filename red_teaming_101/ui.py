@@ -40,8 +40,9 @@ def load_lab_info(lab_title):
         if lab["challenge_title"] == lab_title:
             info = f"### {lab['challenge_title']}\n\n" \
                    f"**Goal:** {lab['goal']}\n\n" \
-                   f"**Description:** {lab['description']}\n\n" \
-                   f"**Desired Output:** {lab['desired_output']}\n\n"
+                   f"**Description:** {lab['description']}\n\n"
+            if lab['desired_output']:
+                info += f"**Desired Output:** {lab['desired_output']}\n\n"
             break
 
     # Reset chat + message box
@@ -57,25 +58,20 @@ with gr.Blocks() as demo:
     )
     starting_lab_info = load_lab_info(titles[0])[0]
     lab_info = gr.Markdown(starting_lab_info)  # Empty initially
-    chatbot = gr.Chatbot()
-    # chatbot = gr.Chatbot(
-    #     label="chat",
-    #     type="messages",
-    #     show_copy_button=True,
-    #     avatar_images=(None, "https://static.langfuse.com/cookbooks/gradio/hf-logo.png",),
-    # )
-    # prompt = gr.Textbox(max_lines=1, label="Chat Message")
-    # prompt.submit(respond, [prompt, chatbot], [chatbot])
-    msg = gr.Textbox(label="Your Message")
-    msg.submit(
+    chatbot = gr.Chatbot(
+        label="chat",
+        avatar_images=(None, "https://static.langfuse.com/cookbooks/gradio/hf-logo.png",),
+    )
+    prompt = gr.Textbox(max_lines=5, label="Your Message")
+    prompt.submit(
         interact,
-        [msg, lab_dropdown, chatbot],
-        [chatbot, msg],
+        [prompt, lab_dropdown, chatbot],
+        [chatbot, prompt],
     )
     # Reset chat history on dropdown change
     lab_dropdown.change(
         load_lab_info,
         inputs=lab_dropdown,
-        outputs=[lab_info, chatbot, msg])
+        outputs=[lab_info, chatbot, prompt])
 
 demo.launch()
