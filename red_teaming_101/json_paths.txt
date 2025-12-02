@@ -2,3 +2,4 @@
 02_metaprompt_extraction/lab02.json
 03_crescendo/lab03.json
 04_crescendo/lab04.json
+05_crescendo/lab05.json
