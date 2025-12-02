@@ -9,7 +9,7 @@ at multiple layers: inputs, outputs, context assembly, and internal system promp
 
 Microsoft’s AI Red Teaming guidance highlights a family of practical defense strategies known as
 **Spotlighting Techniques**. These techniques aim to reduce ambiguity, control model attention,
-* and isolate sensitive data so that user inputs cannot tamper with the application's underlying intent.
+and isolate sensitive data so that user inputs cannot tamper with the application's underlying intent.
 
 ---
 ## Why Spotlighting Techniques Matter
