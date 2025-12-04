@@ -9,8 +9,15 @@ class RedTeamLab:
         self.category = challenge["category"]
         self.scorer = challenge.get("Scorer", {})
 
-        # internal chat log for this lab
-        self.history = []
+        self.history = []  # internal chat log for this lab
+        self.first_user_message = ""
+
+        if "RagInput" in challenge and "document" in challenge["RagInput"]:
+            document = challenge["RagInput"]["document"]
+            self.metaprompt += f"\n\n---\nWEBPAGE HTML:\n{document}\n---"
+            self.first_user_message = challenge["RagInput"].get("firstMessage", "")
+            if "instruction1" in challenge["RagInput"] and challenge["RagInput"]["instruction1"]:
+                self.description = challenge["RagInput"].get("instruction1")
 
     def reset_history(self):
         self.history = []

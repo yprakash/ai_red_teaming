@@ -43,6 +43,10 @@ def load_lab_info(lab_title):
                    f"**Description:** {lab['description']}\n\n"
             if lab['desired_output']:
                 info += f"**Desired Output:** {lab['desired_output']}\n\n"
+            if "RagInput" in lab and "firstMessage" in lab["RagInput"]:
+                # gr.Textbox.update(value=lab["RagInput"]["firstMessage"])
+                info += f"**First Message to Try:** {lab["RagInput"]["firstMessage"]}\n\n"
+
             break
 
     # Reset chat + message box
@@ -57,12 +61,12 @@ with gr.Blocks() as demo:
         label="Select Lab"
     )
     starting_lab_info = load_lab_info(titles[0])[0]
-    lab_info = gr.Markdown(starting_lab_info)  # Empty initially
+    lab_info = gr.Markdown(starting_lab_info)
     chatbot = gr.Chatbot(
         label="chat",
         avatar_images=(None, "https://static.langfuse.com/cookbooks/gradio/hf-logo.png",),
     )
-    prompt = gr.Textbox(max_lines=5, label="Your Message")
+    prompt = gr.Textbox(max_lines=5, label="Your Message", placeholder="Type your prompt here...")
     prompt.submit(
         interact,
         [prompt, lab_dropdown, chatbot],
@@ -72,6 +76,7 @@ with gr.Blocks() as demo:
     lab_dropdown.change(
         load_lab_info,
         inputs=lab_dropdown,
-        outputs=[lab_info, chatbot, prompt])
+        outputs=[lab_info, chatbot, prompt]
+    )
 
 demo.launch()
