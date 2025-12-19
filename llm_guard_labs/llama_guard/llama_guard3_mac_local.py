@@ -1,10 +1,12 @@
 import os
 import time
+from pathlib import Path
 
 from mlx_lm import convert, load, generate
 
 model_id = "meta-llama/Llama-Guard-3-8B"
-local_model_path = "mlx_converted/llamaguard3_8b_4bit"
+local_model_path = "mlx_models/llamaguard3_8b_4bit"
+local_model_path = str(Path("~/" + local_model_path).expanduser())
 
 if os.path.exists(local_model_path):
     print(f"Using the already converted model at {local_model_path}")
